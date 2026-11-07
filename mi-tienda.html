@@ -182,7 +182,36 @@ function validarFormulario(usuario, email) {
         return false;
     }
     return true;
+} 
+// KAN-3: Manejo seguro de sesiones y errores (OWASP A05/A09)
+
+let timerInactividad;
+
+function reiniciarTimerSesion() {
+    clearTimeout(timerInactividad);
+    timerInactividad = setTimeout(() => {
+        cerrarSesionSegura('Tu sesión ha expirado por inactividad.');
+    }, SESION_MS);
 }
+
+function cerrarSesionSegura(mensaje) {
+    sessionStorage.clear();
+    alert(mensaje || 'Sesión finalizada.');
+    window.location.reload();
+}
+
+['click', 'mousemove', 'keypress', 'scroll'].forEach(evento => {
+    window.addEventListener(evento, reiniciarTimerSesion);
+});
+reiniciarTimerSesion();
+
+window.onerror = function(msg, url, line) {
+    console.error(`[LOG SEGURIDAD KAN-3] Error capturado: ${msg} en ${url}:${line}`);
+    alert('Ha ocurrido un error inesperado en la aplicación. Por favor, intente de nuevo.');
+    return true;
+};
+
+/* ---------- Base de datos IndexedDB ---------- */
 /* ---------- Base de datos IndexedDB ---------- */
 let _db;
 function abrirDB() {
