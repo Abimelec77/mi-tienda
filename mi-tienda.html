@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; base-uri 'none'">
+<title>Mi Tienda</title>
+<style>
+:root{--tinta:#1c1530;--uva:#5b3fd6;--uva2:#4429b8;--lila:#f4f1ff;--mango:#ffb627;--menta:#1fa97a;--mora:#d6336c;--gris:#6b6880;--borde:#e4dffa}
+*{box-sizing:border-box}
+body{margin:0;background:var(--lila);color:var(--tinta);font-family:"Trebuchet MS","Avenir Next",ui-rounded,system-ui,sans-serif;line-height:1.45}
+h1,h2,h3{font-weight:800;letter-spacing:-.01em;margin:0}
+h1{font-size:1.9rem} h2{font-size:1.2rem;margin:1.6rem 0 .6rem}
+.sub{color:var(--gris);margin:.2rem 0 0}
+label{display:block;font-size:.9rem;font-weight:700;margin-top:1rem}
+input,select,textarea{width:100%;padding:.7rem .8rem;margin-top:.3rem;border:2px solid var(--borde);border-radius:12px;font:inherit;background:#fff;color:inherit}
+input:focus,select:focus,textarea:focus{border-color:var(--uva);outline:none}
+:focus-visible{outline:3px solid var(--mango);outline-offset:2px}
+button{padding:.7rem 1.2rem;border:0;border-radius:999px;background:var(--uva);color:#fff;font:inherit;font-weight:700;cursor:pointer;margin-top:1rem}
+button:hover{background:var(--uva2)}
+button.sec{background:#e9e5fb;color:var(--uva2)} button.sec:hover{background:#ddd7f7}
+button.peligro{background:#fde4ed;color:var(--mora)} button.peligro:hover{background:#fbd0df}
+button.link{background:none;color:var(--uva);padding:.4rem 0;margin-right:1rem;text-decoration:underline}
+button.mini{margin:.4rem .3rem 0 0;padding:.3rem .8rem;font-size:.8rem}
+.hidden{display:none!important}
+small{color:var(--gris)}
+.logo{font-weight:800;font-size:1.15rem}
+.auth{display:grid;grid-template-columns:1.1fr 1fr;min-height:100vh}
+.hero{background:var(--uva);color:#fff;padding:3rem;display:flex;flex-direction:column;justify-content:center;gap:1rem}
+.hero h1{font-size:2.6rem;line-height:1.1;max-width:14ch}
+.hero p{max-width:36ch;opacity:.92;margin:0}
+.fichas{display:flex;gap:.8rem;margin-top:1rem}
+.fichas span{width:64px;height:64px;border-radius:18px;background:#fff;display:grid;place-items:center;font-size:1.9rem;box-shadow:0 6px 0 #0003;transform:rotate(-6deg)}
+.fichas span:nth-child(even){transform:rotate(5deg);background:var(--mango)}
+.lado{padding:3rem;max-width:470px;width:100%;margin:auto}
+.lado h2{font-size:1.7rem;margin:0 0 .5rem}
+.top{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;padding:.8rem 1.5rem;background:#fff;border-bottom:2px solid var(--borde);position:sticky;top:0;z-index:5}
+.tabs{display:flex;gap:.4rem;flex:1}
+button.tab{margin:0;background:none;color:var(--gris)} button.tab:hover{background:var(--lila)}
+button.tab.activa{background:var(--tinta);color:#fff}
+.yo{display:flex;align-items:center;gap:.6rem} .yo button{margin:0}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--mango);display:grid;place-items:center;font-weight:800}
+.contenido{max-width:1000px;margin:0 auto;padding:1.5rem}
+.barra-h{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.barra-h button{margin:0}
+.caja{background:#fff;border:2px solid var(--borde);border-radius:18px;padding:1.2rem;margin-bottom:1.2rem}
+.caja h2{margin-top:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:0 1rem}
+.fila-btn button{margin-right:.6rem}
+.filtros{display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:1rem}
+.filtros>*{flex:1;min-width:180px;margin:0}
+.prods{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
+.prod{background:#fff;border:2px solid var(--borde);border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+.prod-img{height:96px;display:grid;place-items:center;font-size:2.8rem}
+.cat-0{background:#e7e3ff}.cat-1{background:#dcf5ea}.cat-2{background:#ffe3ec}.cat-3{background:#fff0cc}.cat-4{background:#e3ebfb}
+.prod-body{padding:.9rem;display:flex;flex-direction:column;gap:.35rem;flex:1}
+.prod h3{font-size:1.05rem} .desc{color:var(--gris);font-size:.88rem;margin:0}
+.precio{font-size:1.35rem;font-weight:800}
+.fila{display:flex;justify-content:space-between;align-items:center;gap:.5rem;margin-top:auto;padding-top:.4rem}
+.pill{font-size:.75rem;font-weight:700;padding:.2rem .6rem;border-radius:999px}
+.pill.ok{background:#dcf5ea;color:#0f7a56}.pill.pocas{background:#fff0cc;color:#8a5a00}.pill.agotado{background:#fde4ed;color:var(--mora)}
+.vacio{text-align:center;padding:2rem;color:var(--gris);background:#fff;border:2px dashed var(--borde);border-radius:18px}
+.act{list-style:none;padding:0;margin:0} .act li{padding:.5rem 0;border-bottom:1px solid var(--borde);font-size:.9rem}
+.tabla{overflow-x:auto;background:#fff;border:2px solid var(--borde);border-radius:18px}
+table{border-collapse:collapse;width:100%}
+th,td{padding:.7rem .9rem;text-align:left;font-size:.9rem;border-bottom:1px solid var(--borde)}
+th{color:var(--gris)} td input{margin:0}
+.msg{position:fixed;left:50%;bottom:1.2rem;transform:translateX(-50%);max-width:min(92vw,520px);padding:.8rem 1.2rem;border-radius:14px;font-weight:700;box-shadow:0 8px 24px #0003;z-index:20}
+.err{background:var(--mora);color:#fff}.ok{background:var(--menta);color:#fff}
+@media(max-width:760px){.auth{grid-template-columns:1fr}.hero{padding:2rem}.hero h1{font-size:2rem}.lado{padding:2rem 1.5rem}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="tarjeta">
+
+  <section id="vista-registro" class="auth">
+    <div class="hero">
+      <div class="logo">🛍️ Mi Tienda</div>
+      <h1>Compra y vende fácil.</h1>
+      <p>Descubre productos de otras personas o publica los tuyos en minutos.</p>
+      <div class="fichas"><span>🎧</span><span>🏡</span><span>👕</span><span>🍎</span></div>
+    </div>
+    <div class="lado">
+      <h2>Crea tu cuenta</h2>
+      <label>Nombre de usuario <input id="r-user" maxlength="20" autocomplete="off"></label>
+      <label>Correo <input id="r-email" type="email" maxlength="100" autocomplete="off"></label>
+      <label>Contraseña <input id="r-pass" type="password" maxlength="72" autocomplete="new-password"></label>
+      <small>Usa al menos 10 caracteres, con mayúscula, minúscula y un número.</small><br>
+      <button id="btn-registro">Crear cuenta</button>
+      <button class="link" id="ir-login">Ya tengo cuenta</button>
+    </div>
+  </section>
+
+  <section id="vista-login" class="auth hidden">
+    <div class="hero">
+      <div class="logo">🛍️ Mi Tienda</div>
+      <h1>Qué bueno verte de nuevo.</h1>
+      <p>Descubre productos de otras personas o publica los tuyos en minutos.</p>
+      <div class="fichas"><span>🎧</span><span>🏡</span><span>👕</span><span>🍎</span></div>
+    </div>
+    <div class="lado">
+      <h2>Entra a tu cuenta</h2>
+      <label>Nombre de usuario <input id="l-user" maxlength="20" autocomplete="username"></label>
+      <label>Contraseña <input id="l-pass" type="password" maxlength="72" autocomplete="current-password"></label>
+      <button id="btn-login">Entrar</button>
+      <button class="link" id="ir-registro">Crear una cuenta</button>
+    </div>
+  </section>
+
+  <section id="vista-panel" class="hidden">
+    <header class="top">
+      <div class="logo">🛍️ Mi Tienda</div>
+      <nav class="tabs">
+        <button class="tab activa" id="nav-todo">Tienda</button>
+        <button class="tab" id="nav-mios">Mis publicaciones</button>
+      </nav>
+      <div class="yo"><span class="avatar" id="p-ini"></span><strong id="p-user"></strong><button class="sec mini" id="btn-salir">Salir</button></div>
+    </header>
+    <main class="contenido">
+
+      <div id="tab-catalogo">
+        <div class="barra-h">
+          <div><h1>Tienda</h1><p class="sub">Compra lo que te guste o publica lo tuyo. Solo tú puedes cambiar tus publicaciones.</p></div>
+          <button id="btn-nuevo">+ Vender un producto</button>
+        </div>
+        <div id="form-producto" class="caja hidden">
+          <h2 id="f-titulo">Vender un producto</h2>
+          <div class="grid">
+            <label>Nombre <input id="c-nombre" maxlength="60"></label>
+            <label>Categoría <select id="c-categoria"></select></label>
+            <label>Precio <input id="c-precio" type="number" min="0" max="10000000" step="0.01"></label>
+            <label>Unidades disponibles <input id="c-stock" type="number" min="0" max="100000" step="1"></label>
+          </div>
+          <label>Descripción <textarea id="c-desc" rows="2" maxlength="200"></textarea></label>
+          <div class="fila-btn"><button id="btn-guardar">Publicar producto</button><button class="sec hidden" id="btn-cancelar">Cancelar</button></div>
+        </div>
+        <div class="filtros">
+          <input id="c-buscar" placeholder="Buscar un producto" maxlength="60">
+          <select id="c-filtro"></select>
+        </div>
+        <div class="prods" id="c-grid"></div>
+        <p id="c-vacio" class="vacio hidden">🛒 Todavía no hay productos. ¡Publica el primero!</p>
+        <h2>Tu actividad</h2>
+        <ul id="a-lista" class="act"></ul>
+        <small>Por tu seguridad, la sesión se cierra sola tras 30 minutos sin actividad.</small>
+      </div>
+
+    </main>
+  </section>
+
+  <div id="mensaje" class="msg hidden" role="alert"></div>
+</div>
+
+<script>
+'use strict';
+/* ============================================================
+   APP SEGURA con catálogo - versión navegador (VS Code / Live Server)
+   Base de datos: IndexedDB (usuarios, productos, auditoría)
+   Nota: IndexedDB vive en el navegador. En un proyecto real, la lógica
+   de seguridad y la base de datos van en el SERVIDOR.
+   ============================================================ */
+const $ = (id) => document.getElementById(id);
+const USER_RE  = /^[a-zA-Z0-9_]{3,20}$/;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const MAX_INTENTOS = 5, BLOQUEO_MS = 60 * 1000, SESION_MS = 30 * 60 * 1000;
+const CATEGORIAS = ['Electrónica', 'Hogar', 'Ropa', 'Alimentos', 'Otros'];
+
+/* ---------- Base de datos IndexedDB ---------- */
+let _db;
+function abrirDB() {
+  if (_db) return _db;
+  _db = new Promise((res, rej) => {
+    const r = indexedDB.open('appSeguraCatalogo', 2);
+    r.onupgradeneeded = () => {
+      const d = r.result;
+      if (!d.objectStoreNames.contains('usuarios')) {
+        const u = d.createObjectStore('usuarios', { keyPath: 'clave' });
+        u.createIndex('email', 'email', { unique: true });        // correo único
+      }
+      if (!d.objectStoreNames.contains('productos')) {
+        const p = d.createObjectStore('productos', { keyPath: 'id', autoIncrement: true });
+        p.createIndex('dueno', 'dueno');
+      }
+      if (!d.objectStoreNames.contains('audit')) d.createObjectStore('audit', { keyPath: 'id', autoIncrement: true });
+    };
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+  return _db;
+}
+// Ejecuta una operación dentro de una transacción y devuelve su resultado
+const op = (store, modo, fn) => abrirDB().then(db => new Promise((res, rej) => {
+  const t = db.transaction(store, modo);
+  const r = fn(t.objectStore(store));
+  t.oncomplete = () => res(r && r.result);
+  t.onerror = t.onabort = () => rej(t.error);
+}));
+
+async function registrarEvento(evento, usuario) {                 // registro y monitoreo
+  try { await op('audit', 'readwrite', s => s.add({ evento, usuario, fecha: new Date().toISOString() })); } catch {}
+}
+
+/* ---------- Criptografía: PBKDF2 + sal aleatoria ---------- */
+const aHex = (buf) => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+const deHex = (hex) => new Uint8Array(hex.match(/../g).map(h => parseInt(h, 16)));
+async function hashear(password, saltHex) {
+  const salt = saltHex ? deHex(saltHex) : crypto.getRandomValues(new Uint8Array(16));
+  const clave = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']);
+  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt, iterations: 310000, hash: 'SHA-256' }, clave, 256);
+  return { salt: aHex(salt), hash: aHex(bits) };
+}
+function iguales(a, b) {                                          // comparación en tiempo constante
+  if (a.length !== b.length) return false;
+  let r = 0; for (let i = 0; i < a.length; i++) r |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return r === 0;
+}
+
+/* ---------- Validación ---------- */
+function validarUsuario(user, email, pass) {
+  const e = [];
+  if (!USER_RE.test(user)) e.push('Usuario: 3-20 caracteres (letras, números y guion bajo).');
+  if (!EMAIL_RE.test(email) || email.length > 100) e.push('Correo no válido.');
+  if (pass.length < 10 || pass.length > 72 || !/[a-z]/.test(pass) || !/[A-Z]/.test(pass) || !/\d/.test(pass))
+    e.push('Contraseña: 10-72 caracteres con mayúscula, minúscula y número.');
+  return e;
+}
+function validarProducto(nombre, categoria, precio, stock, desc) {
+  const e = [];
+  if (nombre.length < 2 || nombre.length > 60) e.push('Nombre: 2-60 caracteres.');
+  if (!CATEGORIAS.includes(categoria)) e.push('Categoría no válida.');
+  if (!Number.isFinite(precio) || precio < 0 || precio > 10000000) e.push('Precio: número entre 0 y 10.000.000.');
+  if (!Number.isInteger(stock) || stock < 0 || stock > 100000) e.push('Stock: entero entre 0 y 100.000.');
+  if (desc.length > 200) e.push('Descripción: máximo 200 caracteres.');
+  return e;
+}
+
+/* ---------- Interfaz (textContent: evita XSS) ---------- */
+function mostrar(vista) {
+  for (const v of ['registro', 'login', 'panel']) $('vista-' + v).classList.toggle('hidden', v !== vista);
+  $('tarjeta').classList.toggle('ancho', vista === 'panel');
+  mensaje('');
+}
+function mensaje(texto, tipo = 'err') {
+  const m = $('mensaje');
+  m.textContent = texto;
+  m.className = 'msg ' + tipo + (texto ? '' : ' hidden');
+  clearTimeout(mensaje.t); if (texto) mensaje.t = setTimeout(() => m.classList.add('hidden'), 6000);
+}
+function llenarSelect(sel, opciones, vacio) {
+  sel.replaceChildren();
+  if (vacio) { const o = document.createElement('option'); o.value = ''; o.textContent = vacio; sel.appendChild(o); }
+  for (const c of opciones) { const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); }
+}
+llenarSelect($('c-categoria'), CATEGORIAS);
+llenarSelect($('c-filtro'), CATEGORIAS, 'Todas las categorías');
+
+/* ---------- Sesión con expiración ---------- */
+function iniciarSesion(nombre) {
+  sessionStorage.setItem('sesion', JSON.stringify({ clave: nombre.toLowerCase(), usuario: nombre, expira: Date.now() + SESION_MS }));
+}
+function sesionActual() {
+  try {
+    const s = JSON.parse(sessionStorage.getItem('sesion'));
+    if (s && s.expira > Date.now()) { s.expira = Date.now() + SESION_MS; sessionStorage.setItem('sesion', JSON.stringify(s)); return s; }
+  } catch {}
+  sessionStorage.removeItem('sesion');
+  return null;
+}
+function revisarSesion() {
+  const s = sesionActual();
+  if (s) { $('p-user').textContent = s.usuario; $('p-ini').textContent = s.usuario[0].toUpperCase(); mostrar('panel'); cargarCatalogo(); cargarActividad(); }
+  else if (!$('vista-panel').classList.contains('hidden')) mostrar('login');
+}
+
+/* ---------- Registro ---------- */
+$('btn-registro').addEventListener('click', async () => {
+  const user = $('r-user').value.trim(), email = $('r-email').value.trim().toLowerCase(), pass = $('r-pass').value;
+  const errores = validarUsuario(user, email, pass);
+  if (errores.length) return mensaje(errores.join(' '));
+  const { salt, hash } = await hashear(pass);
+  try {
+    await op('usuarios', 'readwrite', s => s.add({ clave: user.toLowerCase(), nombre: user, email, salt, hash, intentos: 0, bloqueadoHasta: 0 }));
+  } catch { return mensaje('No se pudo completar el registro.'); }  // genérico: no revela si ya existe
+  await registrarEvento('registro', user);
+  $('r-pass').value = '';
+  mostrar('login'); mensaje('Cuenta creada. Ya puedes iniciar sesión.', 'ok');
+});
+
+/* ---------- Login ---------- */
+$('btn-login').addEventListener('click', async () => {
+  const user = $('l-user').value.trim(), pass = $('l-pass').value;
+  const u = USER_RE.test(user) ? await op('usuarios', 'readonly', s => s.get(user.toLowerCase())) : null;
+  if (u && u.bloqueadoHasta > Date.now()) {
+    await registrarEvento('login_bloqueado', user);
+    return mensaje('Cuenta bloqueada temporalmente. Intenta en un minuto.');
+  }
+  const { hash } = await hashear(pass, u ? u.salt : '00'.repeat(16)); // mismo costo exista o no el usuario
+  if (!u || !iguales(hash, u.hash)) {
+    if (u) {
+      u.intentos++;
+      if (u.intentos >= MAX_INTENTOS) { u.bloqueadoHasta = Date.now() + BLOQUEO_MS; u.intentos = 0; }
+      await op('usuarios', 'readwrite', s => s.put(u));
+    }
+    await registrarEvento('login_fallido', user);
+    return mensaje('Usuario o contraseña incorrectos.');
+  }
+  u.intentos = 0; u.bloqueadoHasta = 0;
+  await op('usuarios', 'readwrite', s => s.put(u));
+  iniciarSesion(u.nombre); await registrarEvento('login_ok', u.nombre);
+  $('l-pass').value = '';
+  revisarSesion();
+});
+
+/* ---------- CRUD del catálogo ---------- */
+let editandoId = null;
+const dinero = (n) => '$' + Number(n).toLocaleString('es', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+function limpiarFormulario() {
+  editandoId = null;
+  for (const id of ['c-nombre', 'c-precio', 'c-stock', 'c-desc']) $(id).value = '';
+  $('c-categoria').value = CATEGORIAS[0];
+  $('f-titulo').textContent = 'Vender un producto';
+  $('btn-guardar').textContent = 'Publicar producto';
+  $('btn-cancelar').classList.add('hidden'); $('form-producto').classList.add('hidden');
+}
+
+$('btn-guardar').addEventListener('click', async () => {
+  const ses = sesionActual(); if (!ses) return revisarSesion();
+  const nombre = $('c-nombre').value.trim(), categoria = $('c-categoria').value;
+  const precio = Number($('c-precio').value), stock = Number($('c-stock').value), desc = $('c-desc').value.trim();
+  if ($('c-precio').value === '' || $('c-stock').value === '') return mensaje('Precio y stock son obligatorios.');
+  const errores = validarProducto(nombre, categoria, precio, stock, desc);
+  if (errores.length) return mensaje(errores.join(' '));
+
+  if (editandoId === null) {
+    await op('productos', 'readwrite', s => s.add({ nombre, categoria, precio, stock, descripcion: desc, dueno: ses.clave, duenoNombre: ses.usuario, creado: Date.now() }));
+    await registrarEvento('producto_creado', ses.usuario);
+    mensaje('Producto publicado.', 'ok');
+  } else {
+    const p = await op('productos', 'readonly', s => s.get(editandoId));
+    if (!p || p.dueno !== ses.clave) { limpiarFormulario(); return mensaje('Acceso denegado.'); }   // verificar dueño
+    Object.assign(p, { nombre, categoria, precio, stock, descripcion: desc });
+    await op('productos', 'readwrite', s => s.put(p));
+    await registrarEvento('producto_editado', ses.usuario);
+    mensaje('Producto actualizado.', 'ok');
+  }
+  limpiarFormulario(); cargarCatalogo(); cargarActividad();
+});
+$('btn-cancelar').addEventListener('click', () => { limpiarFormulario(); mensaje(''); });
+
+async function eliminarProducto(id) {
+  const ses = sesionActual(); if (!ses) return revisarSesion();
+  const p = await op('productos', 'readonly', s => s.get(id));
+  if (!p || p.dueno !== ses.clave) return mensaje('Acceso denegado.');
+  if (!confirm('¿Eliminar "' + p.nombre + '"?')) return;
+  await op('productos', 'readwrite', s => s.delete(id));
+  await registrarEvento('producto_eliminado', ses.usuario);
+  if (editandoId === id) limpiarFormulario();
+  mensaje('Producto eliminado.', 'ok'); cargarCatalogo(); cargarActividad();
+}
+
+function editarProducto(p) {
+  editandoId = p.id; $('form-producto').classList.remove('hidden');
+  $('c-nombre').value = p.nombre; $('c-categoria').value = p.categoria;
+  $('c-precio').value = p.precio; $('c-stock').value = p.stock; $('c-desc').value = p.descripcion;
+  $('f-titulo').textContent = 'Editar producto';
+  $('btn-guardar').textContent = 'Actualizar producto';
+  $('btn-cancelar').classList.remove('hidden');
+  $('c-nombre').focus();
+}
+
+function celda(texto) { const td = document.createElement('td'); td.textContent = texto; return td; }
+
+const EMOJI = { 'Electrónica': '🎧', 'Hogar': '🏡', 'Ropa': '👕', 'Alimentos': '🍎', 'Otros': '✨' };
+const FRASES = { registro: 'Creaste tu cuenta', login_ok: 'Iniciaste sesión', login_fallido: 'Un intento de entrada falló', login_bloqueado: 'Entrada bloqueada un momento', logout: 'Cerraste sesión', producto_creado: 'Publicaste un producto', producto_editado: 'Actualizaste una publicación', producto_eliminado: 'Eliminaste una publicación', compra: 'Compraste un producto' };
+function elem(tag, clase, texto) { const e = document.createElement(tag); if (clase) e.className = clase; if (texto !== undefined) e.textContent = texto; return e; }
+
+async function cargarCatalogo() {
+  const ses = sesionActual(); if (!ses) return;
+  let items = await op('productos', 'readonly', s => s.getAll());
+  const q = $('c-buscar').value.trim().toLowerCase(), cat = $('c-filtro').value;
+  items = items.filter(p => (!q || p.nombre.toLowerCase().includes(q) || p.descripcion.toLowerCase().includes(q)) && (!cat || p.categoria === cat) && (!soloMios || p.dueno === ses.clave));
+  items.sort((a, b) => b.creado - a.creado);
+  const grid = $('c-grid'); grid.replaceChildren();
+  for (const p of items) {
+    const card = elem('article', 'prod');
+    const img = elem('div', 'prod-img cat-' + Math.max(0, CATEGORIAS.indexOf(p.categoria)), EMOJI[p.categoria] || '✨');
+    const body = elem('div', 'prod-body');
+    body.append(elem('h3', '', p.nombre));
+    if (p.descripcion) body.append(elem('p', 'desc', p.descripcion));
+    const [txt, clase] = p.stock === 0 ? ['Agotado', 'agotado'] : p.stock <= 5 ? ['Quedan ' + p.stock, 'pocas'] : ['Disponible', 'ok'];
+    const fila = elem('div', 'fila'); fila.append(elem('span', 'precio', dinero(p.precio)), elem('span', 'pill ' + clase, txt));
+    body.append(fila, elem('small', '', 'Vendido por ' + p.duenoNombre));
+    if (p.dueno === ses.clave) {                                  // solo el dueño ve las acciones
+      const acc = elem('div');
+      const be = elem('button', 'mini sec', 'Editar'); be.addEventListener('click', () => editarProducto(p));
+      const bd = elem('button', 'mini peligro', 'Eliminar'); bd.addEventListener('click', () => eliminarProducto(p.id));
+      acc.append(be, bd); body.append(acc);
+    } else if (p.stock > 0) {
+      const bc = elem('button', 'mini', 'Comprar'); bc.addEventListener('click', () => comprarProducto(p.id)); body.append(bc);
+    }
+    card.append(img, body); grid.append(card);
+  }
+  $('c-vacio').classList.toggle('hidden', items.length > 0);
+}
+$('btn-nuevo').addEventListener('click', () => {
+  limpiarFormulario(); $('form-producto').classList.remove('hidden'); $('btn-cancelar').classList.remove('hidden'); $('c-nombre').focus();
+});
+$('c-buscar').addEventListener('input', cargarCatalogo);
+$('c-filtro').addEventListener('change', cargarCatalogo);
+
+async function cargarActividad() {
+  const ses = sesionActual(); if (!ses) return;
+  const todos = await op('audit', 'readonly', s => s.getAll());
+  const mios = todos.filter(e => e.usuario && e.usuario.toLowerCase() === ses.clave).slice(-8).reverse();
+  const ul = $('a-lista'); ul.replaceChildren();
+  for (const e of mios) ul.appendChild(elem('li', '', (FRASES[e.evento] || e.evento) + ' (' + new Date(e.fecha).toLocaleString() + ')'));
+}
+
+/* ---------- Tienda / Mis publicaciones ---------- */
+let soloMios = false;
+for (const [id, v] of [['nav-todo', false], ['nav-mios', true]]) {
+  $(id).addEventListener('click', () => {
+    soloMios = v; $('nav-todo').classList.toggle('activa', !v); $('nav-mios').classList.toggle('activa', v); cargarCatalogo();
+  });
+}
+
+/* ---------- Comprar ---------- */
+async function comprarProducto(id) {
+  const ses = sesionActual(); if (!ses) return revisarSesion();
+  const p = await op('productos', 'readonly', s => s.get(id));
+  if (!p || p.dueno === ses.clave) return mensaje('No puedes comprar tu propio producto.');
+  if (p.stock < 1) return mensaje('Este producto está agotado.');
+  if (!confirm('¿Comprar "' + p.nombre + '" por ' + dinero(p.precio) + '?')) return;
+  // Se vuelve a leer dentro de la transacción para no vender más de lo que hay
+  const hecho = await abrirDB().then(db => new Promise((res, rej) => {
+    const t = db.transaction('productos', 'readwrite'), s = t.objectStore('productos'), rq = s.get(id); let ok = false;
+    rq.onsuccess = () => { const q = rq.result; if (q && q.stock > 0 && q.dueno !== ses.clave) { q.stock--; s.put(q); ok = true; } };
+    t.oncomplete = () => res(ok); t.onerror = t.onabort = () => rej(t.error);
+  }));
+  if (!hecho) return mensaje('Lo sentimos, este producto se agotó.');
+  await registrarEvento('compra', ses.usuario);
+  mensaje('¡Compra realizada! Gracias por comprar.', 'ok'); cargarCatalogo(); cargarActividad();
+}
+
+/* ---------- Navegación y salida ---------- */
+$('ir-login').addEventListener('click', () => mostrar('login'));
+$('ir-registro').addEventListener('click', () => mostrar('registro'));
+$('btn-salir').addEventListener('click', async () => {
+  const s = sesionActual(); if (s) await registrarEvento('logout', s.usuario);
+  sessionStorage.removeItem('sesion'); limpiarFormulario(); $('nav-todo').click(); mostrar('login');
+});
+setInterval(revisarSesion, 60000);
+if (!window.indexedDB || !window.crypto || !crypto.subtle) mensaje('Tu navegador no soporta IndexedDB o Web Crypto. Abre el archivo con Live Server (localhost).');
+revisarSesion();
+</script>
+</body>
+</html>
