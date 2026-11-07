@@ -165,7 +165,24 @@ const USER_RE  = /^[a-zA-Z0-9_]{3,20}$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const MAX_INTENTOS = 5, BLOQUEO_MS = 60 * 1000, SESION_MS = 30 * 60 * 1000;
 const CATEGORIAS = ['Electrónica', 'Hogar', 'Ropa', 'Alimentos', 'Otros'];
+// KAN-2: Sanitización y validación de entradas (OWASP A03)
+function sanitizarHTML(texto) {
+    const div = document.createElement('div');
+    div.textContent = texto;
+    return div.innerHTML;
+}
 
+function validarFormulario(usuario, email) {
+    if (!USER_RE.test(usuario)) {
+        alert('Nombre de usuario inválido.');
+        return false;
+    }
+    if (!EMAIL_RE.test(email)) {
+        alert('Correo electrónico inválido.');
+        return false;
+    }
+    return true;
+}
 /* ---------- Base de datos IndexedDB ---------- */
 let _db;
 function abrirDB() {
